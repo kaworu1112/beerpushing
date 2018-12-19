@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Beer Pushing</title>
+    <style>
+        body,div{
+            margin:0;
+            padding:0;
+        }
+        #d1{
+            width: 1200px;
+            height: 300px;
+            border: 3px solid #FF4040;
+        }
+    </style>
+</head>
+<body>
+
+
+<div id="d1">
+    <canvas id="myCanvas" width="1200" height="300">
+        <p>Not Supported</p>
+    </canvas>
+</div>
+<script>
+	window.onload = function() {
+		const canva=document.getElementById("myCanvas");
+		const cansText=canva.getContext("2d");
+		var img = new Image();
+		img.src="beer.png";	
+				
+		var isMouseDown = false;
+		let ax,ay,x=75,y=132,oldX,oldY,vx=0,vy=0;
+		var bounce=0.98;
+	
+		canva.onmousedown=function (e) {
+			isMouseDown = true;
+			oldX = e.clientX;
+			oldY = e.clientY;
+			document.addEventListener("mousemove", onMouseMove, false);
+            document.addEventListener("mouseup", onMouseUp, false);
+		}
+
+        function onMouseMove(e) {
+			x=e.clientX;
+			y=e.clientY;
+			(x<150)? ax=45 : ax=300;
+			(y<150)? ay=100 : ay=200;
+			(x>45  && x<300)? x=e.clientX : x=ax;
+			(y>100 && y<200)? y=e.clientY : y=ay;	
+        };
+ 
+        function onMouseUp() {
+            isMouseDown = false;
+            document.removeEventListener("mousemove", onMouseMove, false);
+            document.removeEventListener("mouseup", onMouseUp, false)
+		}
+		
+		function drawline()
+		{
+			cansText.beginPath();
+			cansText.moveTo(330,0);
+			cansText.lineTo(330,300);
+			cansText.strokeStyle = 'green';
+			cansText.stroke();
+			cansText.beginPath();
+			cansText.moveTo(1100,0);
+			cansText.lineTo(1100,300);
+			cansText.strokeStyle = 'red';
+			cansText.stroke();
+		}
+		
+		(function frame() {
+            window.requestAnimationFrame(frame);
+            cansText.clearRect(0, 0, canva.width, canva.height);
+				
+			drawline();
+			if (isMouseDown) {
+				vx = x - oldX;
+				vy = y - oldY;
+				oldX = x;
+				oldY = y;
+			}
+			else
+			{
+				x += vx;
+				y += vy;
+                vx = vx*bounce;
+                vy = vy*bounce;
+			}
+			cansText.drawImage(img,x-75,y-132,150,264);
+        })()
+	}
+</script>
+</body>
+</html>
